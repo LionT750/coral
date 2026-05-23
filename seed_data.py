@@ -16,7 +16,8 @@ engine = create_engine(DB_URL)
 Session = sessionmaker(bind=engine)
 
 # Realistic Data Constants
-NAMES = ["João", "Maria", "José", "Ana", "Francisco", "Adriana", "Luiz", "Antonia", "Paulo", "Marcia", "Ricardo", "Sandra", "Fernando", "Camila", "Roberto", "Beatriz", "Lucas", "Juliana", "Marcelo", "Letícia"]
+NAMES_M = ["João", "José", "Francisco", "Luiz", "Paulo", "Ricardo", "Fernando", "Roberto", "Lucas", "Marcelo", "Gabriel", "Rafael", "Gustavo", "Bruno", "Tiago"]
+NAMES_F = ["Maria", "Ana", "Adriana", "Antonia", "Marcia", "Sandra", "Camila", "Beatriz", "Juliana", "Letícia", "Amanda", "Larissa", "Fernanda", "Patricia", "Vanessa"]
 SURNAMES = ["Silva", "Oliveira", "Santos", "Souza", "Lima", "Costa", "Ferreira", "Rodrigues", "Almeida", "Nascimento"]
 
 DISCIPLINAS_DATA = [
@@ -35,8 +36,11 @@ SECTIONS = ["A", "B", "C"]
 def generate_cpf():
     return "".join([str(random.randint(0, 9)) for _ in range(11)])
 
-def get_random_name():
-    return f"{random.choice(NAMES)} {random.choice(SURNAMES)} {random.choice(SURNAMES)}"
+def get_random_person():
+    if random.random() > 0.5:
+        return f"{random.choice(NAMES_M)} {random.choice(SURNAMES)} {random.choice(SURNAMES)}", "M"
+    else:
+        return f"{random.choice(NAMES_F)} {random.choice(SURNAMES)} {random.choice(SURNAMES)}", "F"
 
 def seed():
     session = Session()
@@ -61,8 +65,10 @@ def seed():
         print("👨‍🏫 Creating 30 Professores...")
         professores = []
         for _ in range(30):
+            nome, sexo = get_random_person()
             p = Professor(
-                nome_completo=get_random_name(),
+                nome_completo=nome,
+                sexo=sexo,
                 cpf=generate_cpf(),
                 data_nascimento=date(1970 + random.randint(0, 25), 1, 1),
                 formacao=random.choice(list(Escolaridade))
@@ -72,8 +78,7 @@ def seed():
         session.flush()
 
         print(f"🏫 Creating Turmas for each Subject (10+ per student)...")
-        # In a real school, we need 12 classes * 14 subjects = 168 turma instances
-        turmas_dict = {} # (Grade, Section, Disciplina) -> Turma
+        turmas_dict = {} 
         for grade in GRADES:
             for section in SECTIONS:
                 for disc in disciplinas:
@@ -92,11 +97,13 @@ def seed():
         print(f"👥 Creating Alunos and Matrículas (14 Disciplinas each)...")
         for grade in GRADES:
             for section in SECTIONS:
-                for i in range(20): # 20 students per class
-                    is_at_risk = random.random() < 0.35 # 35% at risk
+                for i in range(20):
+                    is_at_risk = random.random() < 0.35
                     
+                    nome, sexo = get_random_person()
                     al = Aluno(
-                        nome_completo=get_random_name(),
+                        nome_completo=nome,
+                        sexo=sexo,
                         cpf=generate_cpf(),
                         data_nascimento=date(2010, 1, 1),
                         codigo_inep=f"INEP{uuid.uuid4().hex[:8].upper()}"
@@ -104,11 +111,10 @@ def seed():
                     session.add(al)
                     session.flush()
 
-                    # Enroll in ALL subjects for this Grade/Section
                     for disc in disciplinas:
                         t = turmas_dict[(grade, section, disc.id)]
                         m = Matricula(
-                            numero_matricula=f"MAT-{uuid.uuid4().hex[:6].upper()}",
+                            numero_matricula=f"MAT-{uuid.uuid4().hex[:12].upper()}",
                             aluno_id=al.id,
                             turma_id=t.id,
                             status=StatusMatricula.ATIVA
@@ -116,10 +122,8 @@ def seed():
                         session.add(m)
                         session.flush()
 
-                        # Grades with risk factor
                         for b in range(1, 5):
                             if is_at_risk:
-                                # Low grades or poor attendance
                                 nota = random.uniform(2.0, 5.5) if random.random() > 0.5 else random.uniform(4.0, 8.0)
                                 faltas = random.randint(3, 8) if random.random() > 0.5 else 0
                             else:
@@ -129,10 +133,9 @@ def seed():
                             av = Avaliacao(matricula_id=m.id, bimestre=b, nota=round(nota, 1), faltas=faltas)
                             session.add(av)
                         
-                        # Attendance with risk factor
                         for d in range(10):
                             presente = True
-                            if is_at_risk and random.random() < 0.3: # 30% absence for risk students
+                            if is_at_risk and random.random() < 0.3:
                                 presente = False
                             
                             f = Frequencia(matricula_id=m.id, data=date(2024, 3, 1) + timedelta(days=d), presente=presente)
@@ -140,7 +143,7 @@ def seed():
 
         print("💾 Finalizing Seeding...")
         session.commit()
-        print("✅ Hyper-realistic seed complete (30%+ risk, 14 subjects per student)!")
+        print("✅ Seed complete with Name/Gender synchronization!")
 
     except Exception as e:
         session.rollback()
