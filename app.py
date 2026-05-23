@@ -7,7 +7,7 @@ import os
 import pandas as pd
 
 # --- Config ---
-st.set_page_config(page_title="Gestão Escolar Pro", layout="wide", page_icon="🏫")
+st.set_page_config(page_title="DB Escola Publica", layout="wide", page_icon="🏫")
 
 db_url = os.getenv("DATABASE_URL", "postgresql://user:password@db:5432/dbname")
 engine = create_engine(db_url)
