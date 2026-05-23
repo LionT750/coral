@@ -1,41 +1,27 @@
-# 🏫 Sistema de Gestão Escolar Pro (Padrão MEC/Censo)
+# 🏫 Protótipo de Esquema de Banco de Dados: Escola Pública Brasileira
 
-Bem-vindo ao **Gestão Escolar Pro**, uma plataforma integrada desenvolvida para modernizar a administração de instituições de ensino, com foco especial na realidade da escola pública brasileira.
+Este projeto é uma demonstração técnica de uma modelagem de dados (ORM) projetada para representar a estrutura complexa de uma instituição de ensino pública no Brasil, seguindo padrões e nomenclaturas do Censo Escolar (MEC).
 
-## 🎯 Proposta Pedagógica
-Este sistema foi projetado para ir além da simples administração burocrática. Nosso objetivo é fornecer ferramentas de **inteligência pedagógica** que permitam aos gestores e professores agir preventivamente contra a evasão e o insucesso escolar.
+## 🎯 Objetivo do Projeto
+O foco central deste trabalho é a **arquitetura de dados**. Ele serve como uma prova de conceito de como entidades educacionais (Alunos, Professores, Matrículas, Turmas, Disciplinas) podem ser relacionadas de forma robusta e escalável, utilizando padrões modernos de indústria (como UUIDs e trilhas de auditoria).
 
-## 🚀 Funcionalidades Principais
+## 🏗️ Estrutura do Esquema (Modelagem)
+A modelagem abrange as seguintes áreas do domínio escolar:
+*   **Identificação:** Pessoas (Alunos, Professores, Responsáveis) com validação de documentos (CPF, RG, INEP).
+*   **Acadêmico:** Organização por Anos Letivos, Disciplinas e Turmas (com suporte a diferentes turnos).
+*   **Vida Escolar:** Fluxo completo de Matrícula, Registro de Frequência Diária e Avaliações Bimestrais.
+*   **Infraestrutura:** Gestão de Endereços vinculados a múltiplas entidades.
 
-### 📊 Painel de Indicadores (Dashboard)
-Visão estratégica em tempo real de toda a escola, incluindo:
-*   Total de alunos matriculados e ativos.
-*   Média global de desempenho acadêmico.
-*   Taxas de evasão escolar para monitoramento contínuo.
+## 🛠️ Padrões Implementados
+*   **UUID v4:** Identificadores únicos universais para todas as tabelas.
+*   **Soft Delete:** Registro lógico de exclusão para preservação de integridade histórica.
+*   **Audit Fields:** Carimbos de data/hora (`created_at`, `updated_at`) automáticos em todos os registros.
+*   **Relacionamentos Fortes:** Chaves estrangeiras e integridade referencial rigorosa.
 
-### 🚨 Alertas de Risco Escolar
-Algoritmo inteligente que identifica automaticamente alunos em situação de vulnerabilidade com base nos critérios do MEC:
-*   **Apoio Acadêmico:** Identificação de alunos com média geral abaixo de 5.0.
-*   **Combate à Evasão:** Alertas de frequência média inferior a 75%.
-*   **Visão Holística:** O risco é calculado de forma agregada, considerando o desempenho do aluno em todas as disciplinas simultaneamente.
-
-### 📄 Histórico Acadêmico Detalhado
-Relatórios individuais completos para cada estudante, contendo:
-*   Notas bimestrais organizadas por disciplina.
-*   Acompanhamento de assiduidade (presença).
-*   Dados cadastrais integrados (CPF, INEP, Responsáveis).
-
-### 👥 Gestão de Turmas e Desempenho
-Monitoramento granular por sala de aula, permitindo visualizar o ranking de desempenho e o status de aprovação de todos os alunos de uma mesma turma.
-
-### 👨‍🏫 Monitoramento Docente
-Estatísticas sobre a carga de trabalho e o desempenho das turmas sob responsabilidade de cada professor, facilitando a gestão do corpo docente.
-
-## 📋 Como Utilizar
-
-1.  **Navegação:** Utilize o menu lateral para alternar entre as diferentes visões (Dashboard, Alertas, Relatórios).
-2.  **Filtros:** Selecione alunos ou turmas específicas nos menus suspensos para obter detalhes instantâneos.
-3.  **Ações:** O sistema está configurado para refletir automaticamente as mudanças no banco de dados, permitindo um acompanhamento "vivo" do ano letivo de 2024.
+## 📊 Visualização
+Embora o foco seja o banco de dados, o projeto inclui uma interface Streamlit para:
+1.  **Visualizar o Diagrama ER:** Gerar e exportar graficamente o mapa de relações entre as tabelas.
+2.  **Validar o Esquema:** Demonstrar como os dados populados (mock data) se comportam na estrutura proposta através de relatórios e indicadores.
 
 ---
-*Este sistema é uma ferramenta de apoio à decisão pedagógica, focada no sucesso e na permanência do estudante na escola.*
+*Este é um projeto técnico de demonstração de modelagem de dados, sem fins de produto comercial final.*
