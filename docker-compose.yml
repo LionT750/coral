@@ -12,7 +12,7 @@ services:
         condition: service_healthy
 
   db:
-    image: dhi.io/postgres:18-alpine3.22-dev
+    image: postgres:18
     environment:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
