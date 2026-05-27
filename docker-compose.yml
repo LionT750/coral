@@ -17,11 +17,13 @@ services:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=dbname
-      - PGDATA=/var/lib/postgresql/18/data/dbfiles
     volumes:
-      - ./db:/var/lib/postgresql/18/data:rw
+      - db_data:/var/lib/postgresql/18/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U user -d dbname"]
       interval: 5s
       timeout: 5s
       retries: 5
+
+volumes:
+  db_data:
